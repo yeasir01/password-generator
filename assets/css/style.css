@@ -16,7 +16,7 @@ body {
 .container {
     position: absolute;
     background-color: #ffffff;
-    width: 400px;
+    min-width: 320px;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -48,42 +48,62 @@ h1 {
 
 .results-container {
     display: flex;
-    width: 100%;
+    flex-wrap: nowrap;
+    min-width: 100%;
+    overflow: hidden;
+    border: 1px solid #333;
+    border-radius: 3px;
+    overflow: hidden;
+    padding: 5px;
 }
 
 #results {
     padding: 0 5px;
-    font-size: 2rem;
+    font-size: 1.75rem;
+    min-height: 100%;
     width: 100%;
-    border: 1px solid #696969;
-    border-bottom-left-radius: 3px;
-    border-top-left-radius: 3px;
+    border: none;
+}
+
+#results:focus, #results:active {
+    outline: none;
 }
 
 .copy-btn {
     background-color: #696969;
-    line-height: 1.5rem;
-    padding: 0 15px;
+    min-height: 100%;
+    min-width: 35px;
     border: none;
+    border-radius: 3px;
     color: #fff;
-    border-bottom-right-radius: 3px;
-    border-top-right-radius: 3px;
+}
+
+.row {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.row label {
+    font-size: 1.15rem;
+}
+
+.chkbx {
+    height: 15px;
+    width: 15px;
 }
 
 .gen-btn {
     width: 100%;
-    font-size: 1.25rem;
-    border-radius: 6px;
+    height: 50px;
+    font-size: 1.30rem;
+    border-radius: 3px;
     background-color: #7ca6ce;
     color: #fff;
     border: none;
-    line-height: 2.6rem;
 }
 
 .gen-btn:hover {
     background-color: #749bc0;
-}
-
-label {
-    font-size: 1.1rem;
 }
