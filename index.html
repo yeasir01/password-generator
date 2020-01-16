@@ -18,31 +18,31 @@
         <h1>Password Generator</h1>
         <div class="results-container">
             <input id="results" type="text">
-            <button class="copy-btn" id="clipboard"><i class="far fa-clipboard"></i></button>
+            <button class="copy-btn" id="clipboard" onclick="copyFunction()"><i class="far fa-clipboard"></i></button>
         </div>
         <br>
         <div class="slidecontainer">
             <span id="value"></span>
-            <input type="range" min="04" max="24" value="12" class="slider" id="myRange">
+            <input type="range" min="1" max="24" value="12" class="slider" id="myRange">
         </div>
         <br>
         <div class="row">
-            <label for="uprCas">Include uppercase letters?</label>
+            <label for="uprCas">Include uppercase letters</label>
             <input class="chkbx" type="checkbox" name="uppercaseQ" id="uprCas" checked>
         </div>
         <br>
         <div class="row">
-            <label for="lwrCas">Include lowercase letters?</label>
+            <label for="lwrCas">Include lowercase letters</label>
             <input class="chkbx" type="checkbox" name="lowercaseQ" id="lwrCas" checked>
         </div>
         <br>
         <div class="row">
-            <label for="numQ">Include numbers?</label>
+            <label for="numQ">Include numbers</label>
             <input class="chkbx" type="checkbox" name="numbersQ" id="numQ" checked>
         </div>
         <br>
         <div class="row">
-            <label for="symQ">Include symbols?</label>
+            <label for="symQ">Include symbols</label>
             <input class="chkbx" type="checkbox" name="symbolsQ" id="symQ" checked>
         </div>
         <br>
