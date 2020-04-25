@@ -1,5 +1,5 @@
 ## Password Generator
-A Web app used to generate random passwords between 1-24 characters. 
+A web app used to generate random passwords between 1-24 characters. 
 
 The user will be prompted to choose from the following password criteria's
 - Lower Case Letters
