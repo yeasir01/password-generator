@@ -1,104 +1,90 @@
-//grab elements from DOM [used const instead of vars - will not be re-declaring variables]
-const resultE = document.getElementById('results');
-const clipE = document.getElementById('clipboard');
-const valueE = document.getElementById('value');
-const rangeE = document.getElementById('myRange');
-const upperE = document.getElementById('uprCas');
-const lowerE = document.getElementById('lwrCas');
-const numberE = document.getElementById('numQ');
-const symbolE = document.getElementById('symQ');
-const generateE = document.getElementById('gen-btn');
+const result = document.getElementById('result');
+const rangeSelector = document.getElementById('rangeSelector');
+const rangeText = document.getElementById('rangeText');
+const copyButton = document.getElementById('copyButton');
+const generateButton = document.getElementById('genButton');
+const includeUppers = document.getElementById('includeUppers');
+const includeLowers = document.getElementById('includeLowers');
+const includeNumbers = document.getElementById('includeNumbers');
+const includeSymbols = document.getElementById('includeSymbols');
 
-//sets the initial number value in the span based on slider position
-valueE.innerHTML = rangeE.value;
+const uppersArray = genCharArray(65, 90);
+const lowersArray = genCharArray(97, 122);
+const numbersArray = genCharArray(48, 57);
+const symbolsArray = ['!', '@', '$', '&', '?', '~', '%', '?', '*', '+', '-', '^'];
 
-//updates the value in the span based on slider position
-rangeE.oninput = function() {
-    valueE.innerHTML = rangeE.value;
+let mixCharArray = [];
+
+rangeSelector.addEventListener('input', () => {
+    rangeText.textContent = rangeSelector.value;
+});
+
+copyButton.addEventListener('click', () => {
+    result.select();
+    result.setSelectionRange(0, 99999);
+    document.execCommand("copy");
+    alert(`Copied "${result.value}" to your clipboard!`);
+});
+
+generateButton.addEventListener('click', genPassword);
+
+function genCharArray(start, end) {
+    const numberArray = Array(end - start + 1).fill().map((_, idx) => start + idx);
+    const charSetArray = String.fromCharCode(...numberArray).split("");
+    return charSetArray;
 }
 
-//copy password to clipboard
-function copyFunction(){
-    const copyText = resultE;
-    copyText.select();
-    copyText.setSelectionRange(0, 999)
-    document.execCommand('copy');
-    alert("Password Copied: " + copyText.value)
+function genRandChar(array){
+    const idx = Math.floor(Math.random() * array.length);
+    return array[idx];
 }
 
-const randomFunction = {
-    upper: getRandomUpper,
-    lower: getRandomLower,
-    number: getRandomNumber,
-    symbol: getRandomSymbol
-};
-
-//generate event listen instead of setting onclick in html document
-generateE.addEventListener('click', () => {
-    const length = parseInt(rangeE.value); //returns string, need a number so I parsed value.
-    const hasUpper = upperE.checked;
-    const hasLower = lowerE.checked;
-    const hasNumber = numberE.checked;
-    const hasSymbol = symbolE.checked;
-
-    resultE.value = generatePassword(hasUpper, hasLower, hasNumber, hasSymbol, length); //sets the password value in the textbox
-})
-
-/* 
-GENERATE PASSWORD FUNCTION
-1. Intialize password variable
-2. filter out unchecked types
-3. loop over length call a generator function for each type
-4. Since there are 4 types generator will always return a min of 4 - preform slice
-5. add the final password to the textbox
-*/
-
-function generatePassword(upper, lower, number, symbol, length) {
-    let generatedPassword = '';
-    const typesCount = upper + lower + number + symbol; //counts number of values checked
-
-    const typesArr = [{upper}, {lower}, {number}, {symbol}].filter //set an array, curley brackets return "upper:true" instead of "true"
-    (
-        item => Object.values(item) [0]
-    ); 
+function genMixCharArray(){
     
-    if(typesCount == 0) { //if all boxes unchecked return an empty string
-        return '';
+    const uprChecked = includeUppers.checked;
+    const lowChecked = includeLowers.checked;
+    const numChecked = includeNumbers.checked;
+    const symChecked = includeSymbols.checked;
+
+    mixCharArray = [];
+
+    if (uprChecked){
+        mixCharArray.push(...uppersArray);
     }
 
-    for (let i = 0; i < length; i += typesCount){ //goes through for loop & generates differnt types
-        typesArr.forEach(type => {
-            const funcName = Object.keys(type)[0];
-            generatedPassword += randomFunction[funcName]();
-        })
+    if (lowChecked) {
+        mixCharArray.push(...lowersArray);
     }
 
-    const finalPassword = generatedPassword.slice(0, length)
+    if (numChecked) {
+        mixCharArray.push(...numbersArray);
+    }
 
-    return finalPassword
+    if (symChecked) {
+        mixCharArray.push(...symbolsArray);
+    }
 }
 
+function genPassword(){
+    try {
+        const passLength = parseInt(rangeSelector.value);
+        let password = '';
 
-/* 
-return String.fromCharCode() [returns a letter, number or symbol from the character set]
-Math.random() [generates a random decimal number]
-Math.floor() [Rounding]
-my.length [returns the number of characters in a string or an array]
-*/
+        genMixCharArray()
 
-function getRandomUpper() {
-    return String.fromCharCode(Math.floor(Math.random() * 26) + 65); //26 is number of alphabets & 65 is where uppercase starts on chart
-}
+        if ( mixCharArray.length === 0 ) {
+            result.value = '';
 
-function getRandomLower() {
-    return String.fromCharCode(Math.floor(Math.random() * 26) + 97); //26 is number of alphabets & 97 is where lowercase starts on chart
-}
-
-function getRandomNumber() {
-    return String.fromCharCode(Math.floor(Math.random() * 10) + 48); //10 is number of characters (including 0) & 48 is where the numbers starts
-}
-
-function getRandomSymbol() {
-    const symbol = '!@#$%^&*()-_+={}?~';
-    return symbol[Math.floor(Math.random() * symbol.length)]
+        } else {
+            for (let i = 0; i < passLength; i++) {
+                const character = genRandChar(mixCharArray);
+                password += character;
+            }
+            result.value = password;
+        }
+        
+    } catch (err) {
+        result.value = "😰 Ouch that's an error";
+        result.style.color = 'red';
+    }
 }
