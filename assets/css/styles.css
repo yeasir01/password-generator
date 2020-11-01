@@ -122,6 +122,10 @@ body {
     opacity: .9;
 }
 
+.card__button > button:focus {
+    outline: none;
+}
+
 .card__copyright {
     text-align: center;
 }
