@@ -1,86 +1,70 @@
-const result = document.getElementById('result');
+const results = document.getElementById('result');
 const rangeSelector = document.getElementById('rangeSelector');
-const rangeText = document.getElementById('rangeText');
-const copyButton = document.getElementById('copyButton');
-const generateButton = document.getElementById('genButton');
+const rangeValue = document.getElementById('rangeText');
+const copyBtn = document.getElementById('copyButton');
+const generateBtn = document.getElementById('genButton');
+const includeUppers = document.getElementById('includeUppers');
+const includeLowers = document.getElementById('includeLowers');
+const includeSymbols = document.getElementById('includeSymbols');
+const includeNumbers = document.getElementById('includeNumbers');
 
-const uppersArray = genCharSet(65, 90);
-const lowersArray = genCharSet(97, 122);
-const numbersArray = genCharSet(48, 57);
-const symbolsArray = ['!', '@', '$', '&', '?', '~', '%', '?', '*', '+', '-', '^'];
+const uppers = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"];
+const lowers = ['a', 'b', 'c', 'd', 'e', 'f','g', 'h', 'i', 'j', 'k', 'l','m', 'n', 'o', 'p', 'q', 'r','s', 't', 'u', 'v', 'w', 'x','y', 'z'];
+const symbols = ['!', '@', '$', '&', '?', '~', '%', '?', '*', '+', '-', '^'];
+const numbers = [1,2,3,4,5,6,7,8,9,0];
 
-let mixCharArray = [];
+function generateAssets() {
 
-rangeSelector.addEventListener('input', () => {
-    rangeText.textContent = rangeSelector.value;
-});
-
-copyButton.addEventListener('click', () => {
-    result.select();
-    result.setSelectionRange(0, 99999);
-    document.execCommand("copy");
-    alert(`Copied "${result.value}" to your clipboard!`);
-});
-
-generateButton.addEventListener('click', genPassword);
-
-function genCharSet(start, end) {
-    const numberArray = Array(end - start + 1).fill().map((_, idx) => start + idx);
-    const charSetArray = String.fromCharCode(...numberArray).split("");
-    return charSetArray;
-}
-
-function genRandChar(array){
-    const idx = Math.floor(Math.random() * array.length);
-    return array[idx];
-}
-
-function genMixCharArray(){
+    let assets = [];
     
-    const uprChecked = document.getElementById('includeUppers').checked;
-    const lowChecked = document.getElementById('includeLowers').checked;
-    const numChecked = document.getElementById('includeNumbers').checked;
-    const symChecked = document.getElementById('includeSymbols').checked;
-
-    mixCharArray = [];
-
-    if (uprChecked){
-        mixCharArray.push(...uppersArray);
+    if (includeUppers.checked) {
+        assets.push(...uppers)
+    }
+    
+    if (includeLowers.checked) {
+        assets.push(...lowers)
+    }
+    
+    if (includeSymbols.checked) {
+        assets.push(...symbols)
+    }
+    
+    if (includeNumbers.checked) {
+        assets.push(...numbers)
     }
 
-    if (lowChecked) {
-        mixCharArray.push(...lowersArray);
-    }
+    return assets;
+};
 
-    if (numChecked) {
-        mixCharArray.push(...numbersArray);
-    }
-
-    if (symChecked) {
-        mixCharArray.push(...symbolsArray);
-    }
+function generateRandomIndex(arrayLength) {
+    return Math.floor(Math.random() * arrayLength )
 }
 
-function genPassword(){
+function generatePassword() {
+    let finalPassword = [];
+    const assetsArray = generateAssets();
+    
+    for (let i = 0; i < rangeSelector.value; i++) {
+        const idx = generateRandomIndex(assetsArray.length);
+        finalPassword.push(assetsArray[idx]);
+    }
+
+    results.value = finalPassword.join("");
+}
+
+function updateRangeValue() {
+    rangeValue.textContent = rangeSelector.value;
+}
+
+async function copyToClipBoard(){
     try {
-        const passLength = parseInt(rangeSelector.value);
-        let password = '';
-
-        genMixCharArray()
-
-        if ( mixCharArray.length === 0 ) {
-            result.value = '';
-
-        } else {
-            for (let i = 0; i < passLength; i++) {
-                const character = genRandChar(mixCharArray);
-                password += character;
-            }
-            result.value = password;
-        }
-        
+        await navigator.clipboard.writeText(results.value);
+        alert("Password Copied to clipboard!");
     } catch (err) {
-        result.value = "😰 Ouch! that's an error";
-        result.style.color = 'red';
+        console.log("err");
     }
 }
+
+copyBtn.addEventListener('click', copyToClipBoard);
+rangeSelector.addEventListener("input", updateRangeValue);
+generateBtn.addEventListener("click", generatePassword);
